@@ -37,7 +37,7 @@ const ImageSlider = ({ limit }) => {
         }
     }, [url]);
 
-    console.log(images)
+    console.log(curSlide);
 
     if (isLoading) {
         return <div>Loading data ! Please wait</div>;
@@ -47,11 +47,19 @@ const ImageSlider = ({ limit }) => {
         return <div>Error occured ! {errorMsg}</div>;
     }
 
+    const handlePreviousSlide=()=>{
+        setCurSlide(curSlide === 0 ? images.length - 1 : curSlide - 1);
+    }
+
+    const handleNextSlide=()=>{
+        setCurSlide(curSlide===images.length-1 ? 0: curSlide+1)
+    }
+
 
 
     return (
         <div className='container'>
-            <BsArrowLeftCircleFill className='arrow arrow-left' />
+            <BsArrowLeftCircleFill onClick={()=>handlePreviousSlide()} className='arrow arrow-left' />
             {images && images.length
                 ? images.map((imageItem, index) => (
                     <img
@@ -64,9 +72,25 @@ const ImageSlider = ({ limit }) => {
                                 : "current-image hide-current-image"
                         }
                     />
+
                 ))
                 : null}
-            <BsArrowRightCircleFill className='arrow arrow-right' />
+            <span className="circle-indicators">
+                {images && images.length
+                    ? images.map((_, index) => (
+                        <button
+                            key={index}
+                            className={
+                                curSlide === index
+                                    ? "current-indicator"
+                                    : "current-indicator inactive-indicator"
+                            }
+                            onClick={() => setCurSlide(index)}
+                        ></button>
+                    ))
+                    : null}
+            </span>
+            <BsArrowRightCircleFill onClick={()=>handleNextSlide()} className='arrow arrow-right' />
         </div>
     )
 }
